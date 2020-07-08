@@ -1,58 +1,61 @@
-// document.querySelectorAll(':hover')
-// document.querySelectorAll(':active')
 
+document.addEventListener('keydown',pressedKey);
 document.querySelector(".calculator").addEventListener("click", clickResult);
-document.querySelector(".calculator").addEventListener('keydown',pressedKey);
 
 function pressedKey(event) {
-  console.log(event.keyCode);
-  let valueInput = document.querySelector(".input").value;
+  // console.log(event.keyCode);
+  
   switch(event.keyCode){
     case 97:
     case 49: writeInput('1');
-            break;
+        break;
     case 98:
     case 50: writeInput('2');
-            break;
+        break;
     case 99:
     case 51: writeInput('3');
-            break;
+        break;
     case 100:
     case 52: writeInput('4');
-            break;
+        break;
     case 101:
     case 53: writeInput('5');
-            break;
+        break;
     case 102:
     case 54: writeInput('6');
-            break;
+        break;
     case 103:
     case 55: writeInput('7');
-            break;
+        break;
     case 104:
     case 56: writeInput('8');
-            break;
+        break;
     case 105:
     case 57: writeInput('9');
-            break;
+        break;
     case 96:
     case 48: writeInput('0');
-            break;
+        break;
+    case 110: writeInput('.');
+        break;
+    case 8: backspace();
+        break;
+    case 187:
+    case 107: writeOperator('+');
+        break;
+    case 189:
+    case 109: writeOperator('-');
+        break;
+    case 106: writeOperator('*');
+        break;
+    case 111: writeOperator('/');
+        break;
+    case 13: calculate();
+        break;
     }
-
-      function writeInput(digit){
-        ( valueInput === '0' ) ?  document.querySelector('.input').value = digit :
-                                  document.querySelector('.input').value = valueInput + digit;
-      }
 }
 
 function clickResult(event) {
-    // console.log(event.type + " на " + event.currentTarget);
-    // console.log("Координаты: " + event.clientX + ":" + event.clientY);
-  // console.log(event);
-  // console.log(event.srcElement);
-  // console.log(pressedButton);
-  // console.log(valueInput);
   const pressedButton = event.srcElement.dataset.key;
   let valueInput = document.querySelector(".input").value;
 
@@ -81,43 +84,64 @@ function clickResult(event) {
         break;
     case 'reset': document.querySelector(".input").value = '0';
         break;
-    case 'plus': writeInput('+');
+    case 'plus': writeOperator('+');
         break;
-    case 'minus': writeInput('-');
+    case 'minus': writeOperator('-');
         break;
-    case 'multiply': writeInput('*');
+    case 'multiply': writeOperator('*');
         break;
-    case 'divide': writeInput('/');
+    case 'divide': writeOperator('/');
         break;
     case 'backspace': backspace();
         break;
     case 'equal': calculate();
         break;
     }
+}
 
-  function writeInput(digit){
-    ( valueInput === '0' ) ?  document.querySelector('.input').value = digit :
-                              document.querySelector('.input').value = valueInput + digit;
+function writeInput(digit){
+  let textInput = document.querySelector(".input").value;
+
+  ( textInput === '0' ) ? document.querySelector('.input').value = digit :
+                          document.querySelector('.input').value = textInput + digit;
+}
+
+function backspace(){
+  let textInput = document.querySelector('.input').value;
+
+  if (textInput.length === 1) {
+    document.querySelector('.input').value = '0';
+    return;
   }
+  
+  textInput = textInput.substring(0,textInput.length - 1);
+  document.querySelector('.input').value = textInput;
+}
 
-  function backspace(){
-    let textInput = document.querySelector('.input').value;
-
-    if (textInput.length === 1) {
-      document.querySelector('.input').value = '0';
-      return;
-    }
-    // console.log(`backspace! \n ${textInput} \n ${textInput.length}`);
-    textInput = textInput.substring(0,textInput.length - 1);
-
-    document.querySelector('.input').value = textInput;
+function calculate(){
+  let exp = document.querySelector('.input').value;
+  console.log(exp);
+  if (exp) {
+    document.querySelector('.input').value = eval(exp);
   }
+}
 
-  function calculate(){
-    let exp = document.querySelector('.input').value;
+function writeOperator(operator){
+  // console.log('operator' + operator);
 
-    if (exp) {
-      document.querySelector('.input').value = eval(exp);
-    }
-  }
+  let textInput = document.querySelector('.input').value;
+  let endTextInput = textInput.substring(textInput.length - 1);
+  // console.log('textInput' + textInput);
+  // console.log('endTextInput' + endTextInput);
+  isOperator(endTextInput) ?
+    textInput = textInput.substring(0,textInput.length - 1) + operator :
+    textInput = textInput + operator;
+ 
+  document.querySelector('.input').value = textInput;
+}
+
+function isOperator(val){
+// console.log('val' + val);
+  if ( val === '+' || val === '-' || val === '*' || val === '/' ) return true;
+  return false;
 }
